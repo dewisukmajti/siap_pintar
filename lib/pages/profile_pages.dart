@@ -3,17 +3,18 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'edit_profile_pages.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfilePages extends StatefulWidget {
   final String username;
   final String email;
 
-  ProfileScreen({required this.username, required this.email});
+  const ProfilePages({required this.username, required this.email, Key? key})
+      : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfilePagesState createState() => _ProfilePagesState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfilePagesState extends State<ProfilePages> {
   bool isDarkMode = false;
   File? _profileImage;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -31,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showLogoutBottomSheet() {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -40,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 "Logout",
                 style: TextStyle(
                   fontSize: 20,
@@ -48,13 +49,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.red,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "Are you sure you want to log out?",
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
@@ -65,15 +66,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("Cancel"),
+                      child: const Text("Cancel"),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -82,20 +83,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Logged out")),
+                          const SnackBar(content: Text("Logged out")),
                         );
                       },
-                      child: Text("Yes, Logout"),
+                      child: const Text("Yes, Logout"),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
             ],
           ),
         );
@@ -108,10 +109,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               _scaffoldKey.currentState?.openEndDrawer();
             },
@@ -123,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.red),
+              decoration: const BoxDecoration(color: Colors.red),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -138,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? FileImage(_profileImage!)
                               : null,
                           child: _profileImage == null
-                              ? Icon(Icons.person,
+                              ? const Icon(Icons.person,
                                   size: 25, color: Colors.white)
                               : null,
                         ),
@@ -146,33 +147,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red,
                             ),
-                            padding: EdgeInsets.all(3),
-                            child: Icon(Icons.camera_alt,
+                            padding: const EdgeInsets.all(3),
+                            child: const Icon(Icons.camera_alt,
                                 size: 12, color: Colors.white),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(widget.username,
-                      style: TextStyle(color: Colors.white, fontSize: 18)),
-                  Text(widget.email, style: TextStyle(color: Colors.white70)),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 18)),
+                  Text(widget.email,
+                      style: const TextStyle(color: Colors.white70)),
                 ],
               ),
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
               onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text('About'),
+              leading: const Icon(Icons.info),
+              title: const Text('About'),
               onTap: () {},
             ),
           ],
@@ -180,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           GestureDetector(
             onTap: _pickImage,
             child: Stack(
@@ -192,31 +195,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? FileImage(_profileImage!)
                       : null,
                   child: _profileImage == null
-                      ? Icon(Icons.person, size: 50, color: Colors.white)
+                      ? const Icon(Icons.person, size: 50, color: Colors.white)
                       : null,
                 ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.red,
                     ),
-                    padding: EdgeInsets.all(4),
-                    child: Icon(Icons.edit, size: 14, color: Colors.white),
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(Icons.edit,
+                        size: 14, color: Colors.white),
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(widget.username,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 5),
           Text(widget.email,
               style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Divider(
               thickness: 1, color: Colors.grey[300], indent: 20, endIndent: 20),
           Expanded(
@@ -232,7 +237,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildMenuItem(Icons.notifications_outlined, 'Notification'),
                 _buildMenuItem(Icons.payment_outlined, 'Payment'),
                 _buildMenuItem(Icons.security_outlined, 'Security'),
-                _buildMenuItem(Icons.language_outlined, 'Language – English (US)'),
+                _buildMenuItem(Icons.language_outlined,
+                    'Language – English (US)'),
                 _buildDarkModeToggle(),
                 _buildMenuItem(Icons.privacy_tip_outlined, 'Privacy Policy'),
                 _buildMenuItem(Icons.help_outline, 'Help Center'),
@@ -247,17 +253,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 4,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Course'),
-          BottomNavigationBarItem(icon: Icon(Icons.mail), label: 'Inbox'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.payment), label: 'Transaction'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
@@ -280,8 +275,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildDarkModeToggle() {
     return ListTile(
-      leading: Icon(Icons.dark_mode_outlined),
-      title: Text('Dark Mode'),
+      leading: const Icon(Icons.dark_mode_outlined),
+      title: const Text('Dark Mode'),
       trailing: Switch(
         value: isDarkMode,
         onChanged: (value) {

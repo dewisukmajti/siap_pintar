@@ -109,10 +109,28 @@ class _ProfilePagesState extends State<ProfilePages> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Row(
+          children: [
+            Image.asset(
+              "assets/imagees/logo_siap_pintar.png", // pastikan ada di pubspec.yaml
+              height: 28,
+              width: 28,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              "Profile",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.menu),
+            icon: const Icon(Icons.more_horiz, color: Colors.black),
             onPressed: () {
               _scaffoldKey.currentState?.openEndDrawer();
             },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'sign_up_flow.dart'; // Import halaman sign up
+import 'sign_up_flow.dart'; 
+import '../pages/forgot_pasword.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -281,6 +282,10 @@ class _SignInPageState extends State<SignInPage> {
                           child: TextButton(
                             onPressed: () {
                               print('Forgot password pressed');
+                               Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                            );
                             },
                             child: const Text(
                               'Forgot the password?',

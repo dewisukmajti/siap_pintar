@@ -18,6 +18,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  // Validation errors
+  Map<String, String?> validationErrors = {
+    'fullName': null,
+    'firstName': null,
+    'dateOfBirth': null,
+    'email': null,
+    'country': null,
+    'phoneNumber': null,
+    'gender': null,
+    'status': null,
+  };
+
   // Map negara dengan kode negara dan emoji bendera
   final Map<String, Map<String, String>> countries = {
     'United States': {'code': '+1', 'flag': '🇺🇸'},
@@ -30,6 +42,106 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'Canada': {'code': '+1', 'flag': '🇨🇦'},
   };
 
+  @override
+  void initState() {
+    super.initState();
+    // Add listeners to clear validation errors when user starts typing
+    fullNameController.addListener(() => _clearError('fullName'));
+    firstNameController.addListener(() => _clearError('firstName'));
+    emailController.addListener(() => _clearError('email'));
+    phoneController.addListener(() => _clearError('phoneNumber'));
+  }
+
+  void _clearError(String field) {
+    if (validationErrors[field] != null) {
+      setState(() {
+        validationErrors[field] = null;
+      });
+    }
+  }
+
+  bool _validateForm() {
+    setState(() {
+      validationErrors = {
+        'fullName': fullNameController.text.isEmpty ? 'Full Name is required' : null,
+        'firstName': firstNameController.text.isEmpty ? 'First Name is required' : null,
+        'dateOfBirth': selectedDate == null ? 'Date of Birth is required' : null,
+        'email': emailController.text.isEmpty ? 'Email Address is required' : null,
+        'country': selectedCountry == null ? 'Country is required' : null,
+        'phoneNumber': phoneController.text.isEmpty ? 'Phone Number is required' : null,
+        'gender': selectedGender == null ? 'Gender is required' : null,
+        'status': selectedStatus == null ? 'Status is required' : null,
+      };
+    });
+
+    return !validationErrors.values.any((error) => error != null);
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 48,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Success!',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'Profile updated successfully!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+          actions: [
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFE53E3E),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Go back to previous screen
+                },
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -40,8 +152,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (picked != null) {
       setState(() {
         selectedDate = picked;
+        validationErrors['dateOfBirth'] = null;
       });
     }
+  }
+
+  Widget _buildErrorText(String? error) {
+    if (error == null) return SizedBox.shrink();
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: Text(
+        error,
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 12,
+        ),
+      ),
+    );
   }
 
   @override
@@ -64,6 +191,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
         centerTitle: false,
+      ),
+     // BOTTOM NAVIGATION BAR DENGAN TOMBOL UPDATE - SESUAI CONTOH
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(20),
+        color: Colors.white,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFE53E3E), // Warna merah seperti tema app
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 0,
+          ),
+          onPressed: () {
+            if (_validateForm()) {
+              _showSuccessDialog();
+            }
+          },
+          child: const Text(
+            "Update",
+            style: TextStyle(
+              fontSize: 16, 
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -90,7 +245,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['fullName'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: TextFormField(
@@ -101,10 +261,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                       ),
                     ),
+                    _buildErrorText(validationErrors['fullName']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -127,7 +288,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['firstName'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: TextFormField(
@@ -138,10 +304,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                       ),
                     ),
+                    _buildErrorText(validationErrors['firstName']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -164,7 +331,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['dateOfBirth'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: GestureDetector(
@@ -182,7 +354,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 size: 20,
                               ),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             ),
                             controller: TextEditingController(
                               text: selectedDate == null
@@ -193,6 +365,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                     ),
+                    _buildErrorText(validationErrors['dateOfBirth']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -215,7 +388,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['email'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: TextFormField(
@@ -231,10 +409,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             size: 20,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                       ),
                     ),
+                    _buildErrorText(validationErrors['email']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -257,7 +436,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['country'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: DropdownButtonFormField<String>(
@@ -268,7 +452,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                         icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
                         items: countries.keys.map((String country) {
@@ -289,10 +473,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onChanged: (String? newValue) {
                           setState(() {
                             selectedCountry = newValue;
+                            validationErrors['country'] = null;
                           });
                         },
                       ),
                     ),
+                    _buildErrorText(validationErrors['country']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -315,7 +501,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['phoneNumber'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: Row(
@@ -402,6 +593,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                       ),
                     ),
+                    _buildErrorText(validationErrors['phoneNumber']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -424,7 +616,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['gender'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: DropdownButtonFormField<String>(
@@ -435,15 +632,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                         icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
-                        items: ['Male', 'Female', 'Other']
+                        items: ['Male', 'Female']
                             .map((gender) => DropdownMenuItem(value: gender, child: Text(gender)))
                             .toList(),
-                        onChanged: (value) => setState(() => selectedGender = value),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                            validationErrors['gender'] = null;
+                          });
+                        },
                       ),
                     ),
+                    _buildErrorText(validationErrors['gender']),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -466,7 +669,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                          bottom: BorderSide(
+                            color: validationErrors['status'] != null 
+                                ? Colors.red 
+                                : Colors.grey[300]!, 
+                            width: 1
+                          ),
                         ),
                       ),
                       child: DropdownButtonFormField<String>(
@@ -477,53 +685,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                         icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
                         items: ['Student', 'Teacher', 'Professional']
                             .map((status) => DropdownMenuItem(value: status, child: Text(status)))
                             .toList(),
-                        onChanged: (value) => setState(() => selectedStatus = value),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedStatus = value;
+                            validationErrors['status'] = null;
+                          });
+                        },
                       ),
                     ),
+                    _buildErrorText(validationErrors['status']),
                   ],
                 ),
-                SizedBox(height: 40),
-
-                // Update Button
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE53E3E),
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      elevation: 2,
-                      shadowColor: Color(0xFFE53E3E).withOpacity(0.3),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Handle update profile
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Profile updated successfully!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
+                
                 SizedBox(height: 20),
               ],
             ),
@@ -531,5 +710,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    firstNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
   }
 }

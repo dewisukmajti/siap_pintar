@@ -11,19 +11,33 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo_siap_pintar.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-  - assets/images/logo.png
-  - assets/images/laptop.png
-  - assets/images/phone.png
-  - assets/images/certificate.png
-  - assets/images/santai_login.png
-  - assets/images/logo_google.png
+    - assets/images/logo.png
+    - assets/images/laptop.png
+    - assets/images/phone.png
+    - assets/images/certificate.png
+    - assets/images/santai_login.png
+    - assets/images/logo_google.png
+    - assets/images/logo_siap_pintar.png
+    - assets/images/whatsApp.png
+    - assets/images/facebook.png
+    - assets/images/twitter x .png
+    - assets/images/instagram.png
+    - assets/images/gambar_forgot.png
+    - assets/images/gambar_forgot1.png

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'edit_profile_pages.dart';
+import 'help_center.dart';
+import 'notification_page.dart'; 
 
 class ProfilePages extends StatefulWidget {
   final String username;
@@ -113,11 +115,6 @@ class _ProfilePagesState extends State<ProfilePages> {
         elevation: 0,
         title: Row(
           children: [
-            Image.asset(
-              "assets/imagees/logo_siap_pintar.png", // pastikan ada di pubspec.yaml
-              height: 28,
-              width: 28,
-            ),
             const SizedBox(width: 8),
             const Text(
               "Profile",
@@ -252,14 +249,25 @@ class _ProfilePagesState extends State<ProfilePages> {
                         builder: (context) => EditProfileScreen()),
                   );
                 }),
-                _buildMenuItem(Icons.notifications_outlined, 'Notification'),
+               _buildMenuItem(Icons.notifications_outlined, 'Notification', onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NotificationPage()),
+                  );
+                }),
                 _buildMenuItem(Icons.payment_outlined, 'Payment'),
                 _buildMenuItem(Icons.security_outlined, 'Security'),
                 _buildMenuItem(Icons.language_outlined,
                     'Language – English (US)'),
                 _buildDarkModeToggle(),
                 _buildMenuItem(Icons.privacy_tip_outlined, 'Privacy Policy'),
-                _buildMenuItem(Icons.help_outline, 'Help Center'),
+                _buildMenuItem(Icons.help_outline, 'Help Center', onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HelpCenterPage()),
+                  );
+                }),
                 _buildMenuItem(Icons.group_add_outlined, 'Invite Friends'),
                 Divider(
                     thickness: 1,

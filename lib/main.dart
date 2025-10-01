@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import 'pages/profile_pages.dart';
+import 'pages/profile_pages.dart';  // Import yang diperlukan
 import 'pages/edit_profile_pages.dart';
+import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/halaman_login.dart';
 import 'screens/sign_in.dart';
 import 'screens/sign_up_flow.dart';
+import 'pages/home_page.dart'; // Import home_page.dart yang sebenarnya
+import 'pages/notification_page.dart';
+import 'pages/forgot_pasword.dart'; // TAMBAHKAN IMPORT INI
+import 'pages/forgot_password_otp.dart'; // TAMBAHKAN IMPORT INI
+import 'pages/create_new_password.dart'; // TAMBAHKAN IMPORT INI
+import 'pages/success.dart'; // TAMBAHKAN IMPORT INI
 
 void main() {
   runApp(SiapPintarApp());
@@ -14,19 +21,26 @@ class SiapPintarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Siap Pintar App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
       ),
-      home: OnboardingScreen(), // Mulai dari onboarding
+      home: const SplashScreen(),
       routes: {
-        '/onboarding': (context) => OnboardingScreen(),
-        '/welcome': (context) => HalamanLogin(),
-        '/signin': (context) => SignInPage(),
-        '/signup': (context) => SignUpFlow(),
-        '/home': (context) => CustomBottomNavBar(),
-        '/edit': (context) => EditProfileScreen(),
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/welcome': (context) => const HalamanLogin(),
+        '/signin': (context) => const SignInPage(),
+        '/signup': (context) => const SignUpFlow(),
+        '/home': (context) => const CustomBottomNavBar(),
+        '/edit': (context) =>  EditProfileScreen(),
+        '/notification': (context) => const NotificationPage(),
+        // TAMBAHKAN ROUTES FORGOT PASSWORD DI SINI
+        '/forgot-password': (context) => const ForgotPasswordPage(),
+        '/forgot-password-otp': (context) => ForgotPasswordOtpPage(method: '', contact: ''),
+        '/create-new-password': (context) => const CreateNewPasswordPage(),
+        '/password-success': (context) => const PasswordResetSuccessPage(),
       },
     );
   }
@@ -43,13 +57,15 @@ class CustomBottomNavBar extends StatefulWidget {
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 0;
 
-  // List halaman untuk setiap tab
   final List<Widget> _pages = [
-    const HomePage(),
+    const HomePage(), 
     const MyCoursePage(),
     const InboxPage(),
     const TranscriptPage(),
-    ProfileScreen(), // Menggunakan ProfileScreen dari profile_pages.dart
+    const ProfilePages(
+      username: "Andrew Ainsley", 
+      email: "andrew@example.com",
+    ),
   ];
 
   @override
@@ -80,7 +96,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xFF5B7FFF),
+          selectedItemColor: const Color(0xFFE53E3E),
           unselectedItemColor: const Color(0xFF9CA3AF),
           selectedLabelStyle: const TextStyle(
             fontSize: 12,
@@ -124,43 +140,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   }
 }
 
-// ===== PAGES =====
-
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        automaticallyImplyLeading: false, // Hilangkan back button
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.home, size: 80, color: Color(0xFF5B7FFF)),
-            SizedBox(height: 16),
-            Text(
-              'Welcome to Home Page!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'You have successfully logged in',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class MyCoursePage extends StatelessWidget {
   const MyCoursePage({Key? key}) : super(key: key);
 
@@ -178,7 +157,7 @@ class MyCoursePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.play_circle, size: 80, color: Color(0xFF5B7FFF)),
+            Icon(Icons.play_circle, size: 80, color: Color(0xFFE53E3E)),
             SizedBox(height: 16),
             Text(
               'My Course Page',
@@ -208,7 +187,7 @@ class InboxPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble, size: 80, color: Color(0xFF5B7FFF)),
+            Icon(Icons.chat_bubble, size: 80, color: Color(0xFFE53E3E)),
             SizedBox(height: 16),
             Text(
               'Inbox Page',
@@ -238,7 +217,7 @@ class TranscriptPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.description, size: 80, color: Color(0xFF5B7FFF)),
+            Icon(Icons.description, size: 80, color: Color(0xFFE53E3E)),
             SizedBox(height: 16),
             Text(
               'Transcript Page',

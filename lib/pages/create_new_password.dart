@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'success.dart'; // <- INI YANG HARUS DIUBAH
+import 'success.dart';
 
 class CreateNewPasswordPage extends StatefulWidget {
   const CreateNewPasswordPage({Key? key}) : super(key: key);
@@ -31,16 +31,18 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
     });
 
     Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        _isLoading = false;
-      });
-      
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PasswordResetSuccessPage(), // Pastikan class name sama
-        ),
-      );
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PasswordResetSuccessPage(),
+          ),
+        );
+      }
     });
   }
 
@@ -64,101 +66,161 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Gambar animasi
-            Center(
-              child: Image.asset(
-                'assets/images/gambar_forgot1.png',
-                height: 180,
-                fit: BoxFit.contain,
-              ),
-            ),
-            
-            SizedBox(height: 20),
-            
-            Text(
-              'Create Your New Password',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[700],
-                height: 1.5,
-              ),
-            ),
-            SizedBox(height: 32),
-
-            // New Password Field
-            TextFormField(
-              controller: newPasswordController,
-              obscureText: _obscureNewPassword,
-              decoration: InputDecoration(
-                labelText: 'New Password',
-                prefixIcon: Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureNewPassword ? Icons.visibility_off : Icons.visibility,
+      body: Column(
+        children: [
+          // Content area yang bisa scroll
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Gambar animasi
+                  Center(
+                    child: Container(
+                      height: 180,
+                      child: Image.asset(
+                        'assets/images/gambar_forgot1.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.lock_reset,
+                              size: 60,
+                              color: Colors.grey[400],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureNewPassword = !_obscureNewPassword;
-                    });
-                  },
-                ),
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) => setState(() {}),
-            ),
-
-            SizedBox(height: 20),
-
-            // Confirm Password Field
-            TextFormField(
-              controller: confirmPasswordController,
-              obscureText: _obscureConfirmPassword,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                prefixIcon: Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                  
+                  SizedBox(height: 20),
+                  
+                  // Title
+                  Text(
+                    'Create Your New Password',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureConfirmPassword = !_obscureConfirmPassword;
-                    });
-                  },
-                ),
-                border: OutlineInputBorder(),
+                  SizedBox(height: 8),
+                  Text(
+                    'Please create a new secure password for your account',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      height: 1.4,
+                    ),
+                  ),
+                  SizedBox(height: 32),
+
+                  // New Password Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: TextFormField(
+                      controller: newPasswordController,
+                      obscureText: _obscureNewPassword,
+                      decoration: InputDecoration(
+                        labelText: 'New Password',
+                        labelStyle: TextStyle(color: Colors.grey[700]),
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[600]),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureNewPassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey[600],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureNewPassword = !_obscureNewPassword;
+                            });
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      ),
+                      onChanged: (value) => setState(() {}),
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Confirm Password Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: TextFormField(
+                      controller: confirmPasswordController,
+                      obscureText: _obscureConfirmPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        labelStyle: TextStyle(color: Colors.grey[700]),
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[600]),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey[600],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureConfirmPassword = !_obscureConfirmPassword;
+                            });
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      ),
+                      onChanged: (value) => setState(() {}),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  // Password Requirements
+                  _buildPasswordRequirements(),
+
+                  // Spacer besar agar ada jarak antara requirements dan tombol
+                  SizedBox(height: 40),
+                ],
               ),
-              onChanged: (value) => setState(() {}),
             ),
+          ),
 
-            SizedBox(height: 16),
-
-            // Password Requirements
-            _buildPasswordRequirements(),
-
-            Spacer(),
-
-            // Continue Button
-            Container(
-              width: double.infinity,
+          // Tombol Continue - TETAP DI BAWAH TIDAK BERUBAH
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(20),
+            child: Container(
+              height: 56,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _isFormValid ? Color(0xFFE53E3E) : Colors.grey[400],
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  foregroundColor: Colors.white,
+                  elevation: 4,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 onPressed: _isFormValid && !_isLoading ? _resetPassword : null,
                 child: _isLoading
                     ? SizedBox(
-                        height: 20,
-                        width: 20,
+                        height: 24,
+                        width: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -169,14 +231,12 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
                         ),
                       ),
               ),
             ),
-            SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -185,19 +245,36 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
     final password = newPasswordController.text;
     final isConfirmed = confirmPasswordController.text == password;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildRequirement(
-          'At least 6 characters',
-          password.length >= 6,
-        ),
-        SizedBox(height: 4),
-        _buildRequirement(
-          'Passwords match',
-          isConfirmed && confirmPasswordController.text.isNotEmpty,
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Password Requirements:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          SizedBox(height: 8),
+          _buildRequirement(
+            'At least 6 characters',
+            password.length >= 6,
+          ),
+          SizedBox(height: 6),
+          _buildRequirement(
+            'Passwords match',
+            isConfirmed && confirmPasswordController.text.isNotEmpty,
+          ),
+        ],
+      ),
     );
   }
 
@@ -207,14 +284,16 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
         Icon(
           isMet ? Icons.check_circle : Icons.radio_button_unchecked,
           color: isMet ? Colors.green : Colors.grey,
-          size: 16,
+          size: 18,
         ),
         SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            color: isMet ? Colors.green : Colors.grey,
-            fontSize: 12,
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: isMet ? Colors.green : Colors.grey[600],
+              fontSize: 14,
+            ),
           ),
         ),
       ],

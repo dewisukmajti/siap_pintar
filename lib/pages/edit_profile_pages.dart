@@ -174,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: Colors.white, // DIUBAH: Background putih
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -242,7 +242,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -285,7 +285,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -328,7 +328,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -385,7 +385,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -433,7 +433,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -498,7 +498,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -613,7 +613,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(
@@ -666,7 +666,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF8F9FA), // DIUBAH: Abu-abu terang
                         borderRadius: BorderRadius.circular(8),
                         border: Border(
                           bottom: BorderSide(

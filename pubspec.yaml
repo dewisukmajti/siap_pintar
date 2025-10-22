@@ -22,7 +22,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo_siap_pintar.png"
+  image_path: "assets/images/logo_siap_pintar1.png"
 
 flutter:
   uses-material-design: true
@@ -35,9 +35,18 @@ flutter:
     - assets/images/santai_login.png
     - assets/images/logo_google.png
     - assets/images/logo_siap_pintar.png
+    - assets/images/logo_siap_pintar1.png
     - assets/images/whatsApp.png
     - assets/images/facebook.png
     - assets/images/twitter x .png
     - assets/images/instagram.png
     - assets/images/gambar_forgot.png
     - assets/images/gambar_forgot1.png
+    - assets/images/mentor1.png
+    - assets/images/mentor2.png
+    - assets/images/mentor3.png
+    - assets/images/mentor4.png
+    - assets/images/mentor5.png
+    - assets/images/course1.png
+    - assets/images/course2.png
+    - assets/images/course3.png

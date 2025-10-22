@@ -1,8 +1,266 @@
 import 'package:flutter/material.dart';
-import 'notification_page.dart'; // Import halaman notifikasi
+import 'notification_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+  String selectedCategory = 'All';
+
+  final List<String> categories = ['All', '3D Design', 'Business', 'Programming'];
+
+  // Data untuk mentors dengan gambar
+  final List<Map<String, String>> mentors = [
+    {'name': 'Joanna', 'image': 'assets/images/mentor1.png'},
+    {'name': 'Jacob', 'image': 'assets/images/mentor2.png'},
+    {'name': 'Michella', 'image': 'assets/images/mentor3.png'},
+    {'name': 'Wade', 'image': 'assets/images/mentor4.png'},
+    {'name': 'Andrew', 'image': 'assets/images/mentor5.png'},
+  ];
+
+  // Data untuk courses dengan gambar
+  final List<Map<String, String>> courses = [
+    {
+      'title': '3D Design Illustration',
+      'price': '\$48',
+      'oldPrice': '\$68',
+      'rating': '4.8',
+      'students': '8.9K students',
+      'image': 'assets/images/course1.png',
+      'category': '3D Design',
+      'bookmark': 'false',
+    },
+    {
+      'title': 'Digital Entrepreneur...',
+      'price': '\$39',
+      'oldPrice': '',
+      'rating': '4.6',
+      'students': '4.182 students',
+      'image': 'assets/images/course2.png',
+      'category': 'Business',
+      'bookmark': 'true',
+    },
+    {
+      'title': 'Learn UX User Persona',
+      'price': '\$42',
+      'oldPrice': '\$75',
+      'rating': '4.7',
+      'students': '1.798 students',
+      'image': 'assets/images/course3.png',
+      'category': 'UI/UX Design',
+      'bookmark': 'false',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      setState(() {
+        searchQuery = searchController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCourseCard(
+    String title,
+    String price,
+    String oldPrice,
+    String rating,
+    String students,
+    String imagePath,
+    String category,
+    {bool showBookmark = false}
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Course Image
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+              ),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  print('Error loading image: $imagePath'); // Debug print
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image,
+                      size: 40,
+                      color: Colors.grey[400],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          // Course Details
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Category Badge
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEE2E2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFFE53E3E),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _getCategoryIcon(category),
+                              size: 12,
+                              color: const Color(0xFFE53E3E),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              category,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFE53E3E),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        showBookmark ? Icons.bookmark_border : Icons.bookmark,
+                        size: 20,
+                        color: const Color(0xFFE53E3E),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        price,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFE53E3E),
+                        ),
+                      ),
+                      if (oldPrice.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          oldPrice,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[500],
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        size: 14,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        rating,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '| $students',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case '3D Design':
+        return Icons.view_in_ar_outlined;
+      case 'Business':
+        return Icons.trending_up;
+      case 'UI/UX Design':
+        return Icons.brush_outlined;
+      default:
+        return Icons.category_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +273,36 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header Section
+                // Header Section - PERBAIKI PROFILE IMAGE
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[300],
-                      child: Icon(Icons.person, color: Colors.grey[600]),
+                    // Profile Image - Andrew Ainsley - GUNAKAN mentor5.png
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.grey[300]!,
+                          width: 2,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/mentor5.png', // GUNAKAN mentor5.png untuk Andrew
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('Error loading profile image'); // Debug print
+                            return Container(
+                              color: Colors.grey[300],
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.grey[600],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -51,11 +332,9 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Tombol Notifikasi - Ditambahkan navigasi
                     IconButton(
                       icon: const Icon(Icons.notifications_outlined),
                       onPressed: () {
-                        // Navigasi ke halaman notifikasi
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -66,7 +345,7 @@ class HomePage extends StatelessWidget {
                       iconSize: 28,
                     ),
                     IconButton(
-                      icon: const Icon(Icons.bookmark_outline),
+                      icon: const Icon(Icons.bookmark_border),
                       onPressed: () {},
                       iconSize: 28,
                     ),
@@ -75,37 +354,62 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 24),
                 
                 // Search Bar
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: Colors.grey[400]),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Search',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.all(6),
+                Focus(
+                  child: Builder(
+                    builder: (context) {
+                      final bool hasFocus = Focus.of(context).hasFocus;
+                      return Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          color: hasFocus ? const Color(0xFFFFF5F5) : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(
-                          Icons.tune,
-                          color: Colors.blue[600],
-                          size: 20,
+                        child: TextField(
+                          controller: searchController,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: hasFocus ? const Color(0xFFE53E3E) : Colors.grey[500],
+                            ),
+                            suffixIcon: searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.tune, color: Color(0xFFE53E3E)),
+                                  onPressed: () {
+                                    searchController.clear();
+                                  },
+                                )
+                              : const Icon(
+                                  Icons.tune,
+                                  color: Color(0xFFE53E3E),
+                                ),
+                            border: InputBorder.none,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFE53E3E),
+                                width: 1,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[100]!,
+                                width: 1,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -117,8 +421,8 @@ class HomePage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.blue[400]!,
-                        Colors.blue[600]!,
+                        Colors.red[400]!,
+                        Colors.red[600]!,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -127,7 +431,6 @@ class HomePage extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      // Decorative circles
                       Positioned(
                         right: -20,
                         top: -20,
@@ -206,7 +509,6 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Dots indicator
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: List.generate(
@@ -229,6 +531,174 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 24),
+
+                // Top Mentors Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Top Mentors',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'See All',
+                        style: TextStyle(
+                          color: Color(0xFFE53E3E),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Top Mentors List dengan Gambar
+                SizedBox(
+                  height: 110,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: mentors.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 16),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.grey[300]!,
+                                  width: 2,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  mentors[index]['image']!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    print('Error loading mentor image: ${mentors[index]['image']}'); // Debug print
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Colors.grey[600],
+                                        size: 30,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              mentors[index]['name']!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Most Popular Courses Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Most Popular Courses',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'See All',
+                        style: TextStyle(
+                          color: Color(0xFFE53E3E),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Category Chips
+                SizedBox(
+                  height: 40,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: categories.map((category) {
+                      final isSelected = selectedCategory == category;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedCategory = category;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFFE53E3E) : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(0xFFE53E3E),
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              category,
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : const Color(0xFFE53E3E),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Popular Courses List dengan Gambar
+                ...courses.map((course) {
+                  return Column(
+                    children: [
+                      _buildCourseCard(
+                        course['title']!,
+                        course['price']!,
+                        course['oldPrice']!,
+                        course['rating']!,
+                        course['students']!,
+                        course['image']!,
+                        course['category']!,
+                        showBookmark: course['bookmark'] == 'true',
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                }).toList(),
               ],
             ),
           ),

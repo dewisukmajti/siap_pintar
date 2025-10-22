@@ -21,12 +21,12 @@ class _HelpCenterPageState extends State<HelpCenterPage>
 
   final List<Map<String, String>> faqItems = [
     {
-      'question': 'What is Elera?',
+      'question': 'What is siap pintar?',
       'answer':
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     },
     {
-      'question': 'How to use Elera?',
+      'question': 'How to use siap pintar?',
       'answer':
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     },
@@ -36,12 +36,12 @@ class _HelpCenterPageState extends State<HelpCenterPage>
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     },
     {
-      'question': 'Is Elera free to use?',
+      'question': 'Is siap pintar free to use?',
       'answer':
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     },
     {
-      'question': 'How to make offer on Elera?',
+      'question': 'How to make offer on siap pintar?',
       'answer':
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     },
@@ -72,44 +72,34 @@ class _HelpCenterPageState extends State<HelpCenterPage>
     {
       'title': 'Customer Service',
       'icon': Icons.headset_mic_outlined,
-      'color': Color(0xFF4F46E5),
-      'backgroundColor': Color(0xFFEEF2FF),
+      'color': Color(0xFFE53E3E),
       'useIcon': true,
     },
     {
       'title': 'WhatsApp',
-      'color': Color(0xFF25D366),
-      'backgroundColor': Color(0xFFE8F5E8),
+      'imagePath': 'assets/images/whatsApp.png',
       'useIcon': false,
-      'customWidget': null,
     },
     {
       'title': 'Website',
       'icon': Icons.language_outlined,
-      'color': Color(0xFF4F46E5),
-      'backgroundColor': Color(0xFFEEF2FF),
+      'color': Color(0xFFE53E3E),
       'useIcon': true,
     },
     {
       'title': 'Facebook',
-      'color': Color(0xFF1877F2),
-      'backgroundColor': Color(0xFFE3F2FD),
+      'imagePath': 'assets/images/facebook.png',
       'useIcon': false,
-      'customWidget': null,
     },
     {
       'title': 'Twitter',
-      'color': Color(0xFF000000),
-      'backgroundColor': Color(0xFFF5F5F5),
+      'imagePath': 'assets/images/twitter x .png',
       'useIcon': false,
-      'customWidget': null,
     },
     {
       'title': 'Instagram',
-      'color': Color(0xFFE4405F),
-      'backgroundColor': Color(0xFFFCE4EC),
+      'imagePath': 'assets/images/instagram.png',
       'useIcon': false,
-      'customWidget': null,
     },
   ];
 
@@ -117,9 +107,8 @@ class _HelpCenterPageState extends State<HelpCenterPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    filteredFaqItems = faqItems; // Initialize with all FAQ items
+    filteredFaqItems = faqItems;
     
-    // Add listener to search controller
     searchController.addListener(() {
       _filterFAQItems(searchController.text);
     });
@@ -132,7 +121,7 @@ class _HelpCenterPageState extends State<HelpCenterPage>
     super.dispose();
   }
 
-  // Add filter function
+  // Filter function - hanya match dari awal (prefix)
   void _filterFAQItems(String query) {
     setState(() {
       searchQuery = query;
@@ -140,163 +129,11 @@ class _HelpCenterPageState extends State<HelpCenterPage>
         filteredFaqItems = faqItems;
       } else {
         filteredFaqItems = faqItems.where((item) {
-          return item['question']!.toLowerCase().contains(query.toLowerCase()) ||
-                 item['answer']!.toLowerCase().contains(query.toLowerCase());
+          return item['question']!.toLowerCase().startsWith(query.toLowerCase()) ||
+                 item['answer']!.toLowerCase().startsWith(query.toLowerCase());
         }).toList();
       }
     });
-  }
-
-  // Custom WhatsApp icon
-  Widget _buildWhatsAppIcon() {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: Color(0xFF25D366),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Center(
-        child: Container(
-          width: 14,
-          height: 14,
-          child: Stack(
-            children: [
-              // Chat bubble
-              Positioned(
-                left: 1,
-                bottom: 1,
-                child: Container(
-                  width: 10,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              // Phone icon
-              Positioned(
-                right: 1,
-                top: 1,
-                child: Container(
-                  width: 3,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(1),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Custom Facebook icon
-  Widget _buildFacebookIcon() {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: Color(0xFF1877F2),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Center(
-        child: Text(
-          'f',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Arial',
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Custom Twitter/X icon
-  Widget _buildTwitterIcon() {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Center(
-        child: Text(
-          'X',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Custom Instagram icon
-  Widget _buildInstagramIcon() {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFF58529),
-            Color(0xFFDD2A7B),
-            Color(0xFF8134AF),
-            Color(0xFF515BD4),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Main square outline for camera
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 1.5),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ),
-            // Inner circle (lens)
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 1),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ),
-            // Flash dot
-            Positioned(
-              top: 2.5,
-              right: 2.5,
-              child: Container(
-                width: 2,
-                height: 2,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -341,14 +178,13 @@ class _HelpCenterPageState extends State<HelpCenterPage>
       ),
       body: Column(
         children: [
-          // Tab Bar
           Container(
             color: Colors.white,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: const Color(0xFF4F46E5),
+              indicatorColor: const Color(0xFFE53E3E),
               indicatorWeight: 3,
-              labelColor: const Color(0xFF4F46E5),
+              labelColor: const Color(0xFFE53E3E),
               unselectedLabelColor: Colors.grey,
               labelStyle: const TextStyle(
                 fontSize: 16,
@@ -365,9 +201,7 @@ class _HelpCenterPageState extends State<HelpCenterPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                // FAQ Tab
                 _buildFAQTab(),
-                // Contact us Tab
                 _buildContactTab(),
               ],
             ),
@@ -382,49 +216,46 @@ class _HelpCenterPageState extends State<HelpCenterPage>
       color: Colors.white,
       child: Column(
         children: [
-          // Category Chips - Hide when searching
-          if (searchQuery.isEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: categories.map((category) {
-                    final isSelected = selectedCategory == category;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedCategory = category;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFF4F46E5) : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: const Color(0xFF4F46E5),
-                              width: 1,
-                            ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: categories.map((category) {
+                  final isSelected = selectedCategory == category;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = category;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isSelected ? const Color(0xFFE53E3E) : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFFE53E3E),
+                            width: 1,
                           ),
-                          child: Text(
-                            category,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : const Color(0xFF4F46E5),
-                              fontWeight: FontWeight.w500,
-                            ),
+                        ),
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : const Color(0xFFE53E3E),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
+          ),
 
-          // Search Bar
           Container(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Focus(
@@ -433,7 +264,7 @@ class _HelpCenterPageState extends State<HelpCenterPage>
                   final bool hasFocus = Focus.of(context).hasFocus;
                   return Container(
                     decoration: BoxDecoration(
-                      color: hasFocus ? const Color(0xFFEEF2FF) : Colors.grey[100],
+                      color: hasFocus ? const Color(0xFFFFF5F5) : Colors.grey[100],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
@@ -447,23 +278,23 @@ class _HelpCenterPageState extends State<HelpCenterPage>
                         hintStyle: TextStyle(color: Colors.grey[500]),
                         prefixIcon: Icon(
                           Icons.search, 
-                          color: hasFocus ? const Color(0xFF4F46E5) : Colors.grey[500],
+                          color: hasFocus ? const Color(0xFFE53E3E) : Colors.grey[500],
                         ),
                         suffixIcon: searchQuery.isNotEmpty 
                           ? IconButton(
-                              icon: const Icon(Icons.tune, color: Color(0xFF4F46E5)),
+                              icon: const Icon(Icons.tune, color: Color(0xFFE53E3E)),
                               onPressed: () {
                                 searchController.clear();
                               },
                             )
                           : const Icon(
                               Icons.tune, 
-                              color: Color(0xFF4F46E5),
+                              color: Color(0xFFE53E3E),
                             ),
                         border: InputBorder.none,
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF4F46E5), width: 1),
+                          borderSide: const BorderSide(color: Color(0xFFE53E3E), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -481,12 +312,10 @@ class _HelpCenterPageState extends State<HelpCenterPage>
             ),
           ),
 
-          // FAQ Items - Show search results first, then all items
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Search Results Container (prioritized and in border)
                   if (searchQuery.isNotEmpty && filteredFaqItems.isNotEmpty)
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -530,7 +359,6 @@ class _HelpCenterPageState extends State<HelpCenterPage>
                       ),
                     ),
                   
-                  // No results found
                   if (searchQuery.isNotEmpty && filteredFaqItems.isEmpty)
                     Container(
                       padding: const EdgeInsets.all(32),
@@ -561,13 +389,13 @@ class _HelpCenterPageState extends State<HelpCenterPage>
                       ),
                     ),
                   
-                  // Regular FAQ Items (always show)
-                  ...faqItems.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      child: _buildFAQItem(item, showHighlight: false, showBorder: true, showArrow: true),
-                    );
-                  }).toList(),
+                  if (searchQuery.isEmpty)
+                    ...faqItems.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        child: _buildFAQItem(item, showHighlight: false, showBorder: true, showArrow: true),
+                      );
+                    }).toList(),
                 ],
               ),
             ),
@@ -638,7 +466,7 @@ class _HelpCenterPageState extends State<HelpCenterPage>
               ],
               trailing: showArrow ? const Icon(
                 Icons.keyboard_arrow_down,
-                color: Color(0xFF4F46E5),
+                color: Color(0xFFE53E3E),
               ) : const SizedBox.shrink(),
               tilePadding: const EdgeInsets.symmetric(horizontal: 16),
             ),
@@ -648,7 +476,6 @@ class _HelpCenterPageState extends State<HelpCenterPage>
     );
   }
 
-  // Add highlight text function
   Widget _buildHighlightedText(String text, String query, {bool isAnswer = false}) {
     if (query.isEmpty) {
       return Text(
@@ -670,7 +497,6 @@ class _HelpCenterPageState extends State<HelpCenterPage>
     int index = lowerText.indexOf(lowerQuery);
     
     while (index >= 0) {
-      // Add text before the match
       if (index > start) {
         spans.add(TextSpan(
           text: text.substring(start, index),
@@ -682,7 +508,6 @@ class _HelpCenterPageState extends State<HelpCenterPage>
         ));
       }
       
-      // Add highlighted match
       spans.add(TextSpan(
         text: text.substring(index, index + query.length),
         style: TextStyle(
@@ -696,7 +521,6 @@ class _HelpCenterPageState extends State<HelpCenterPage>
       index = lowerText.indexOf(lowerQuery, start);
     }
     
-    // Add remaining text
     if (start < text.length) {
       spans.add(TextSpan(
         text: text.substring(start),
@@ -747,12 +571,8 @@ class _HelpCenterPageState extends State<HelpCenterPage>
                     Container(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(
-                        color: option['backgroundColor'],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
                       child: Center(
-                        child: _getContactIcon(option['title']),
+                        child: _getContactIcon(option['title'], option),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -780,34 +600,37 @@ class _HelpCenterPageState extends State<HelpCenterPage>
     );
   }
 
-  Widget _getContactIcon(String title) {
+  Widget _getContactIcon(String title, Map<String, dynamic> option) {
+    if (option['useIcon'] == true) {
+      return Icon(
+        option['icon'],
+        color: option['color'],
+        size: 20,
+      );
+    } else {
+      return Image.asset(
+        option['imagePath'],
+        width: 20,
+        height: 20,
+        errorBuilder: (context, error, stackTrace) {
+          return _getFallbackIcon(title);
+        },
+      );
+    }
+  }
+
+  Widget _getFallbackIcon(String title) {
     switch (title) {
       case 'WhatsApp':
-        return _buildWhatsAppIcon();
+        return Icon(Icons.chat, color: Color(0xFF25D366), size: 20);
       case 'Facebook':
-        return _buildFacebookIcon();
+        return Icon(Icons.facebook, color: Color(0xFF1877F2), size: 20);
       case 'Twitter':
-        return _buildTwitterIcon();
+        return Text('X', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold));
       case 'Instagram':
-        return _buildInstagramIcon();
-      case 'Customer Service':
-        return Icon(
-          Icons.headset_mic_outlined,
-          color: Color(0xFF4F46E5),
-          size: 20,
-        );
-      case 'Website':
-        return Icon(
-          Icons.language_outlined,
-          color: Color(0xFF4F46E5),
-          size: 20,
-        );
+        return Icon(Icons.camera_alt, color: Color(0xFFE4405F), size: 20);
       default:
-        return Icon(
-          Icons.help_outline,
-          color: Colors.grey,
-          size: 20,
-        );
+        return Icon(Icons.help_outline, color: Colors.grey, size: 20);
     }
   }
 }

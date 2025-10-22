@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '/screens/halaman_login.dart';
 import 'dart:io';
 import 'edit_profile_pages.dart';
 import 'help_center.dart';
-import 'notification_page.dart'; 
+import 'notification_page.dart';
+import 'riset_password.dart';
 
 class ProfilePages extends StatefulWidget {
   final String username;
@@ -92,6 +94,13 @@ class _ProfilePagesState extends State<ProfilePages> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Logged out")),
                         );
+                        
+                        // Navigate to login page after logout
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HalamanLogin()),
+                          (Route<dynamic> route) => false,
+                        );
                       },
                       child: const Text("Yes, Logout"),
                     ),
@@ -110,6 +119,7 @@ class _ProfilePagesState extends State<ProfilePages> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -135,11 +145,12 @@ class _ProfilePagesState extends State<ProfilePages> {
         ],
       ),
       endDrawer: Drawer(
+        backgroundColor: Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.red),
+              decoration: const BoxDecoration(color: Colors.white),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -155,16 +166,16 @@ class _ProfilePagesState extends State<ProfilePages> {
                               : null,
                           child: _profileImage == null
                               ? const Icon(Icons.person,
-                                  size: 25, color: Colors.white)
+                                  size: 25, color: Colors.grey) 
                               : null,
                         ),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.red,
+                              color: Colors.grey[600], // Diubah dari merah menjadi abu-abu
                             ),
                             padding: const EdgeInsets.all(3),
                             child: const Icon(Icons.camera_alt,
@@ -177,109 +188,122 @@ class _ProfilePagesState extends State<ProfilePages> {
                   const SizedBox(height: 10),
                   Text(widget.username,
                       style:
-                          const TextStyle(color: Colors.white, fontSize: 18)),
+                          const TextStyle(color: Colors.black, fontSize: 18)), // Diubah dari putih menjadi hitam
                   Text(widget.email,
-                      style: const TextStyle(color: Colors.white70)),
+                      style: TextStyle(color: Colors.grey[600])), // Diubah dari putih70 menjadi abu-abu
                 ],
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              leading: const Icon(Icons.settings, color: Colors.black),
+              title: const Text('Settings', style: TextStyle(color: Colors.black)),
               onTap: () {},
             ),
             ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About'),
+              leading: const Icon(Icons.info, color: Colors.black),
+              title: const Text('About', style: TextStyle(color: Colors.black)),
               onTap: () {},
             ),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: _pickImage,
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)
-                      : null,
-                  child: _profileImage == null
-                      ? const Icon(Icons.person, size: 50, color: Colors.white)
-                      : null,
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red,
-                    ),
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(Icons.edit,
-                        size: 14, color: Colors.white),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: _pickImage,
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: _profileImage != null
+                        ? FileImage(_profileImage!)
+                        : null,
+                    child: _profileImage == null
+                        ? const Icon(Icons.person, size: 50, color: Colors.white)
+                        : null,
                   ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: const Icon(Icons.edit,
+                          size: 14, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(widget.username,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
+            Text(widget.email,
+                style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+            const SizedBox(height: 20),
+            Divider(
+                thickness: 1, color: Colors.grey[300], indent: 20, endIndent: 20),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: ListView(
+                  children: [
+                    _buildMenuItem(Icons.edit_outlined, 'Edit Profile', onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProfileScreen()),
+                      );
+                    }),
+                   _buildMenuItem(Icons.notifications_outlined, 'Notification', onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotificationPage()),
+                      );
+                    }),
+                    _buildMenuItem(Icons.payment_outlined, 'Payment'),
+                    _buildMenuItem(Icons.security_outlined, 'Security'),
+                    _buildMenuItem(Icons.language_outlined,
+                        'Language – English (US)'),
+                    _buildDarkModeToggle(),
+                    _buildMenuItem(Icons.privacy_tip_outlined, 'Privacy Policy'),
+                    _buildMenuItem(Icons.help_outline, 'Help Center', onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HelpCenterPage()),
+                      );
+                    }),
+                    // Ganti Invite Friends dengan Change Password
+                    _buildMenuItem(Icons.lock_outline, 'Change Password', onTap: () {
+                      // Navigasi ke halaman reset password
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                      );
+                    }),
+                    Divider(
+                        thickness: 1,
+                        color: Colors.grey[300],
+                        indent: 20,
+                        endIndent: 20),
+                    _buildMenuItem(Icons.logout_outlined, 'Logout',
+                        color: Colors.red, onTap: _showLogoutBottomSheet),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(widget.username,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 5),
-          Text(widget.email,
-              style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-          const SizedBox(height: 20),
-          Divider(
-              thickness: 1, color: Colors.grey[300], indent: 20, endIndent: 20),
-          Expanded(
-            child: ListView(
-              children: [
-                _buildMenuItem(Icons.edit_outlined, 'Edit Profile', onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProfileScreen()),
-                  );
-                }),
-               _buildMenuItem(Icons.notifications_outlined, 'Notification', onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NotificationPage()),
-                  );
-                }),
-                _buildMenuItem(Icons.payment_outlined, 'Payment'),
-                _buildMenuItem(Icons.security_outlined, 'Security'),
-                _buildMenuItem(Icons.language_outlined,
-                    'Language – English (US)'),
-                _buildDarkModeToggle(),
-                _buildMenuItem(Icons.privacy_tip_outlined, 'Privacy Policy'),
-                _buildMenuItem(Icons.help_outline, 'Help Center', onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HelpCenterPage()),
-                  );
-                }),
-                _buildMenuItem(Icons.group_add_outlined, 'Invite Friends'),
-                Divider(
-                    thickness: 1,
-                    color: Colors.grey[300],
-                    indent: 20,
-                    endIndent: 20),
-                _buildMenuItem(Icons.logout_outlined, 'Logout',
-                    color: Colors.red, onTap: _showLogoutBottomSheet),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

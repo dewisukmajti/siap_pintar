@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notification_page.dart';
+import 'most_popular_courses_page.dart';
+import 'search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,8 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController searchController = TextEditingController();
-  String searchQuery = '';
   String selectedCategory = 'All';
 
   final List<String> categories = ['All', '3D Design', 'Business', 'Programming'];
@@ -58,22 +58,6 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    searchController.addListener(() {
-      setState(() {
-        searchQuery = searchController.text;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
   Widget _buildCourseCard(
     String title,
     String price,
@@ -117,7 +101,6 @@ class _HomePageState extends State<HomePage> {
                 imagePath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  print('Error loading image: $imagePath'); // Debug print
                   return Container(
                     color: Colors.grey[200],
                     child: Icon(
@@ -172,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const Spacer(),
                       Icon(
-                        showBookmark ? Icons.bookmark_border : Icons.bookmark,
+                        showBookmark ? Icons.bookmark : Icons.bookmark_border,
                         size: 20,
                         color: const Color(0xFFE53E3E),
                       ),
@@ -267,441 +250,451 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header Section - PERBAIKI PROFILE IMAGE
-                Row(
-                  children: [
-                    // Profile Image - Andrew Ainsley - GUNAKAN mentor5.png
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.grey[300]!,
-                          width: 2,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/mentor5.png', // GUNAKAN mentor5.png untuk Andrew
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            print('Error loading profile image'); // Debug print
-                            return Container(
-                              color: Colors.grey[300],
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.grey[600],
-                              ),
-                            );
-                          },
-                        ),
+        child: Column(
+          children: [
+            // HEADER SECTION - STATIS (TIDAK IKUT SCROLL)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  // Profile Image
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.grey[300]!,
+                        width: 2,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Good Morning ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/mentor5.png',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey[600],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Good Morning ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            const Text('👋'),
+                          ],
+                        ),
+                        const Text(
+                          'Andrew Ainsley',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationPage(),
+                        ),
+                      );
+                    },
+                    iconSize: 28,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    onPressed: () {},
+                    iconSize: 28,
+                  ),
+                ],
+              ),
+            ),
+            
+            // SCROLLABLE CONTENT
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Search Bar - NAVIGASI KE SEARCH PAGE
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SearchPage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            enabled: false,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Search',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey[500],
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.tune,
+                                color: Color(0xFFE53E3E),
+                              ),
+                              border: InputBorder.none,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey[100]!,
+                                  width: 1,
                                 ),
                               ),
-                              const Text('👋'),
-                            ],
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey[100]!,
+                                  width: 1,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                            ),
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // Today's Special Card
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.red[400]!,
+                              Colors.red[600]!,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: -20,
+                              top: -20,
+                              child: Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 40,
+                              top: 60,
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Text(
+                                    '40% OFF',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Today\'s Special',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      '40%',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 56,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Get a discount for every course order!\nOnly valid for today!',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    height: 1.4,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    5,
+                                    (index) => Container(
+                                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                                      width: index == 0 ? 24 : 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(
+                                          index == 0 ? 1.0 : 0.4,
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Top Mentors Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
                           const Text(
-                            'Andrew Ainsley',
+                            'Top Mentors',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications_outlined),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const NotificationPage(),
-                          ),
-                        );
-                      },
-                      iconSize: 28,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.bookmark_border),
-                      onPressed: () {},
-                      iconSize: 28,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                
-                // Search Bar
-                Focus(
-                  child: Builder(
-                    builder: (context) {
-                      final bool hasFocus = Focus.of(context).hasFocus;
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: hasFocus ? const Color(0xFFFFF5F5) : Colors.grey[100],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: TextField(
-                          controller: searchController,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Search',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: hasFocus ? const Color(0xFFE53E3E) : Colors.grey[500],
-                            ),
-                            suffixIcon: searchQuery.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.tune, color: Color(0xFFE53E3E)),
-                                  onPressed: () {
-                                    searchController.clear();
-                                  },
-                                )
-                              : const Icon(
-                                  Icons.tune,
-                                  color: Color(0xFFE53E3E),
-                                ),
-                            border: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFE53E3E),
-                                width: 1,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Colors.grey[100]!,
-                                width: 1,
-                              ),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 24),
-                
-                // Today's Special Card
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.red[400]!,
-                        Colors.red[600]!,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        right: -20,
-                        top: -20,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 40,
-                        top: 60,
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                          TextButton(
+                            onPressed: () {},
                             child: const Text(
-                              '40% OFF',
+                              'See All',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                                color: Color(0xFFE53E3E),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              const Text(
-                                'Today\'s Special',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Top Mentors List
+                      SizedBox(
+                        height: 110,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: mentors.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(right: 16),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.grey[300]!,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        mentors[index]['image']!,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: Colors.grey[300],
+                                            child: Icon(
+                                              Icons.person,
+                                              color: Colors.grey[600],
+                                              size: 30,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    mentors[index]['name']!,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Spacer(),
-                              Text(
-                                '40%',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 56,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Most Popular Courses Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
                           const Text(
-                            'Get a discount for every course order!\nOnly valid for today!',
+                            'Most Popular Courses',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              height: 1.4,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              5,
-                              (index) => Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 3),
-                                width: index == 0 ? 24 : 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(
-                                    index == 0 ? 1.0 : 0.4,
-                                  ),
-                                  borderRadius: BorderRadius.circular(3),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MostPopularCoursesPage(),
                                 ),
+                              );
+                            },
+                            child: const Text(
+                              'See All',
+                              style: TextStyle(
+                                color: Color(0xFFE53E3E),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
+                      const SizedBox(height: 12),
 
-                // Top Mentors Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Top Mentors',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'See All',
-                        style: TextStyle(
-                          color: Color(0xFFE53E3E),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Top Mentors List dengan Gambar
-                SizedBox(
-                  height: 110,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: mentors.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(right: 16),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.grey[300]!,
-                                  width: 2,
+                      // Category Chips
+                      SizedBox(
+                        height: 40,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: categories.map((category) {
+                            final isSelected = selectedCategory == category;
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedCategory = category;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? const Color(0xFFE53E3E) : Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: const Color(0xFFE53E3E),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    category,
+                                    style: TextStyle(
+                                      color: isSelected ? Colors.white : const Color(0xFFE53E3E),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  mentors[index]['image']!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    print('Error loading mentor image: ${mentors[index]['image']}'); // Debug print
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(
-                                        Icons.person,
-                                        color: Colors.grey[600],
-                                        size: 30,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              mentors[index]['name']!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
+                            );
+                          }).toList(),
                         ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Most Popular Courses Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Most Popular Courses',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'See All',
-                        style: TextStyle(
-                          color: Color(0xFFE53E3E),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Category Chips
-                SizedBox(
-                  height: 40,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: categories.map((category) {
-                      final isSelected = selectedCategory == category;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedCategory = category;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFFE53E3E) : Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: const Color(0xFFE53E3E),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              category,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : const Color(0xFFE53E3E),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Popular Courses List dengan Gambar
-                ...courses.map((course) {
-                  return Column(
-                    children: [
-                      _buildCourseCard(
-                        course['title']!,
-                        course['price']!,
-                        course['oldPrice']!,
-                        course['rating']!,
-                        course['students']!,
-                        course['image']!,
-                        course['category']!,
-                        showBookmark: course['bookmark'] == 'true',
                       ),
                       const SizedBox(height: 16),
+
+                      // Popular Courses List
+                      ...courses.map((course) {
+                        return Column(
+                          children: [
+                            _buildCourseCard(
+                              course['title']!,
+                              course['price']!,
+                              course['oldPrice']!,
+                              course['rating']!,
+                              course['students']!,
+                              course['image']!,
+                              course['category']!,
+                              showBookmark: course['bookmark'] == 'true',
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      }).toList(),
                     ],
-                  );
-                }).toList(),
-              ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -17,28 +17,28 @@ class _MyCoursesPageState extends State<MyCoursesPage>
       'title': 'Intro to UI/UX Design',
       'duration': '2 hrs 30 mins',
       'progress': 0.75,
-      'icon': Icons.design_services,
+      'image': 'assets/images/course1.png',
       'color': const Color(0xFFE53E3E),
     },
     {
       'title': 'Wordpress Website Dev...',
       'duration': '3 hrs 15 mins',
       'progress': 0.50,
-      'icon': Icons.web,
+      'image': 'assets/images/course2.png',
       'color': const Color(0xFFF59E0B),
     },
     {
       'title': '3D Blender and UI/UX',
       'duration': '2 hrs 48 mins',
       'progress': 0.25,
-      'icon': Icons.view_in_ar,
+      'image': 'assets/images/course3.png',
       'color': const Color(0xFF8B5CF6),
     },
     {
       'title': 'Learn UX User Persona',
       'duration': '2 hrs 35 mins',
       'progress': 0.60,
-      'icon': Icons.person_outline,
+      'image': 'assets/images/course1.png',
       'color': const Color(0xFFF59E0B),
     },
   ];
@@ -48,28 +48,28 @@ class _MyCoursesPageState extends State<MyCoursesPage>
       'title': '3D Design Illustration',
       'duration': '2 hrs 25 mins',
       'progress': 1.0,
-      'icon': Icons.threed_rotation,
+      'image': 'assets/images/course1.png',
       'color': const Color(0xFFEC4899),
     },
     {
       'title': 'CRM Management for D...',
       'duration': '3 hrs 20 mins',
       'progress': 1.0,
-      'icon': Icons.business,
+      'image': 'assets/images/course_crm.png',
       'color': const Color(0xFF10B981),
     },
     {
       'title': 'Flutter Mobile Apps',
       'duration': '4 hrs 50 mins',
       'progress': 1.0,
-      'icon': Icons.phone_android,
+      'image': 'assets/images/course_flutter.png',
       'color': const Color(0xFF3B82F6),
     },
     {
       'title': '3D Icons Set Blender',
       'duration': '2 hrs 45 mins',
       'progress': 1.0,
-      'icon': Icons.collections,
+      'image': 'assets/images/course_blender.png',
       'color': const Color(0xFF4F46E5),
     },
   ];
@@ -162,7 +162,7 @@ class _MyCoursesPageState extends State<MyCoursesPage>
           title: course['title'],
           duration: course['duration'],
           progress: course['progress'],
-          icon: course['icon'],
+          imagePath: course['image'],
           color: course['color'],
           isCompleted: isCompleted,
         );
@@ -174,7 +174,7 @@ class _MyCoursesPageState extends State<MyCoursesPage>
     required String title,
     required String duration,
     required double progress,
-    required IconData icon,
+    required String imagePath,
     required Color color,
     required bool isCompleted,
   }) {
@@ -209,18 +209,29 @@ class _MyCoursesPageState extends State<MyCoursesPage>
           ),
           child: Row(
             children: [
-              // Course Icon - Ukuran lebih besar
+              // Course Image - Ganti dari icon ke gambar
               Container(
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 40,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.grey[400],
+                          size: 40,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -251,7 +262,7 @@ class _MyCoursesPageState extends State<MyCoursesPage>
                 ),
               ),
               const SizedBox(width: 12),
-              // Circular Progress - Ukuran lebih besar
+              // Circular Progress
               SizedBox(
                 width: 70,
                 height: 70,
@@ -323,7 +334,7 @@ class CircularProgressPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-// Course Detail Page
+// Course Detail Page dengan Multiple Sections
 class CourseDetailPage extends StatelessWidget {
   final String title;
   final bool isCompleted;
@@ -334,46 +345,310 @@ class CourseDetailPage extends StatelessWidget {
     required this.isCompleted,
   }) : super(key: key);
 
+  // Function to get course content based on title
+  Map<String, dynamic> _getCourseContent(String courseTitle) {
+    if (courseTitle.contains('Wordpress')) {
+      return {
+        'sections': [
+          {
+            'title': 'Section 1 - Introduction',
+            'duration': '30 mins',
+            'lessons': [
+              {
+                'number': '01',
+                'title': 'Why Using WordPress',
+                'duration': '10 mins',
+                'description': 'Learn why WordPress is the most popular CMS in the world. Understand its benefits for website development and content management.',
+              },
+              {
+                'number': '02',
+                'title': 'Set up Your WordPress Account',
+                'duration': '5 mins',
+                'description': 'Step-by-step guide to create and configure your WordPress account. Learn about hosting, domains, and basic setup.',
+              },
+              {
+                'number': '03',
+                'title': 'Take a Look WordPress Dashboard',
+                'duration': '15 mins',
+                'description': 'Explore the WordPress dashboard and learn about all the tools and features. Master the admin interface for efficient website management.',
+              },
+            ],
+          },
+          {
+            'title': 'Section 2 - Advanced Topics',
+            'duration': '55 mins',
+            'lessons': [
+              {
+                'number': '04',
+                'title': 'Working with Themes & Plugins',
+                'duration': '15 mins',
+                'description': 'Learn how to install and customize WordPress themes. Discover essential plugins to extend your website functionality.',
+              },
+              {
+                'number': '05',
+                'title': 'Creating Pages & Posts',
+                'duration': '20 mins',
+                'description': 'Master the difference between pages and posts. Learn how to create, edit, and manage your website content effectively.',
+              },
+              {
+                'number': '06',
+                'title': 'Customizing with Widgets',
+                'duration': '10 mins',
+                'description': 'Understand how to use widgets to customize your website sidebar, footer, and other widget-ready areas.',
+              },
+              {
+                'number': '07',
+                'title': 'SEO Optimization',
+                'duration': '10 mins',
+                'description': 'Learn essential SEO techniques to make your WordPress website search engine friendly and improve your rankings.',
+              },
+            ],
+          },
+        ],
+      };
+    } else if (courseTitle.contains('UI/UX Design')) {
+      return {
+        'sections': [
+          {
+            'title': 'Section 1 - Design Fundamentals',
+            'duration': '45 mins',
+            'lessons': [
+              {
+                'number': '01',
+                'title': 'What is UI/UX Design?',
+                'duration': '15 mins',
+                'description': 'Understand the difference between UI and UX design. Learn the core principles and importance of good design.',
+              },
+              {
+                'number': '02',
+                'title': 'Design Thinking Process',
+                'duration': '20 mins',
+                'description': 'Explore the design thinking methodology and how to apply it to create user-centered designs.',
+              },
+              {
+                'number': '03',
+                'title': 'User Research Methods',
+                'duration': '10 mins',
+                'description': 'Learn various user research techniques to gather insights and understand user needs.',
+              },
+            ],
+          },
+          {
+            'title': 'Section 2 - Practical Skills',
+            'duration': '1 hr 45 mins',
+            'lessons': [
+              {
+                'number': '04',
+                'title': 'Wireframing Basics',
+                'duration': '25 mins',
+                'description': 'Learn how to create effective wireframes to plan your design layout and structure.',
+              },
+              {
+                'number': '05',
+                'title': 'Prototyping Techniques',
+                'duration': '30 mins',
+                'description': 'Master prototyping methods to create interactive designs and test user flows.',
+              },
+              {
+                'number': '06',
+                'title': 'Color Theory & Typography',
+                'duration': '25 mins',
+                'description': 'Understand color psychology and typography principles to create visually appealing designs.',
+              },
+              {
+                'number': '07',
+                'title': 'Design Systems',
+                'duration': '25 mins',
+                'description': 'Learn how to create and maintain design systems for consistent and scalable designs.',
+              },
+            ],
+          },
+        ],
+      };
+    } else if (courseTitle.contains('3D Blender')) {
+      return {
+        'sections': [
+          {
+            'title': 'Section 1 - Blender Basics',
+            'duration': '40 mins',
+            'lessons': [
+              {
+                'number': '01',
+                'title': 'Blender Interface Overview',
+                'duration': '15 mins',
+                'description': 'Get familiar with Blender\'s interface, workspace, and essential tools for 3D modeling.',
+              },
+              {
+                'number': '02',
+                'title': 'Basic Navigation & Controls',
+                'duration': '10 mins',
+                'description': 'Learn how to navigate the 3D viewport and use basic controls for efficient modeling.',
+              },
+              {
+                'number': '03',
+                'title': 'Creating Your First Object',
+                'duration': '15 mins',
+                'description': 'Create and manipulate basic 3D objects using Blender\'s modeling tools.',
+              },
+            ],
+          },
+          {
+            'title': 'Section 2 - 3D Modeling',
+            'duration': '2 hrs 8 mins',
+            'lessons': [
+              {
+                'number': '04',
+                'title': 'Mesh Editing Techniques',
+                'duration': '25 mins',
+                'description': 'Learn advanced mesh editing tools and techniques for complex 3D models.',
+              },
+              {
+                'number': '05',
+                'title': 'Materials and Texturing',
+                'duration': '30 mins',
+                'description': 'Understand how to apply materials and textures to make your 3D models look realistic.',
+              },
+              {
+                'number': '06',
+                'title': 'Lighting and Rendering',
+                'duration': '25 mins',
+                'description': 'Master lighting techniques and rendering settings for professional-looking 3D scenes.',
+              },
+              {
+                'number': '07',
+                'title': 'Animation Basics',
+                'duration': '48 mins',
+                'description': 'Learn the fundamentals of 3D animation and how to create simple animations in Blender.',
+              },
+            ],
+          },
+        ],
+      };
+    } else if (courseTitle.contains('Flutter')) {
+      return {
+        'sections': [
+          {
+            'title': 'Section 1 - Flutter Fundamentals',
+            'duration': '50 mins',
+            'lessons': [
+              {
+                'number': '01',
+                'title': 'What is Flutter?',
+                'duration': '10 mins',
+                'description': 'Introduction to Flutter framework and its advantages for cross-platform mobile development.',
+              },
+              {
+                'number': '02',
+                'title': 'Setting Up Development Environment',
+                'duration': '15 mins',
+                'description': 'Step-by-step guide to install and configure Flutter SDK and Android Studio.',
+              },
+              {
+                'number': '03',
+                'title': 'Understanding Widgets',
+                'duration': '25 mins',
+                'description': 'Learn about Flutter widgets and how they work to build user interfaces.',
+              },
+            ],
+          },
+          {
+            'title': 'Section 2 - App Development',
+            'duration': '4 hrs',
+            'lessons': [
+              {
+                'number': '04',
+                'title': 'Building Your First App',
+                'duration': '45 mins',
+                'description': 'Create your first Flutter app and understand the basic project structure.',
+              },
+              {
+                'number': '05',
+                'title': 'State Management',
+                'duration': '1 hr',
+                'description': 'Learn different state management approaches in Flutter for dynamic apps.',
+              },
+              {
+                'number': '06',
+                'title': 'API Integration',
+                'duration': '1 hr 15 mins',
+                'description': 'Connect your Flutter app to backend services and handle API calls.',
+              },
+              {
+                'number': '07',
+                'title': 'Publishing to App Stores',
+                'duration': '1 hr',
+                'description': 'Learn how to prepare and publish your Flutter app to Google Play and App Store.',
+              },
+            ],
+          },
+        ],
+      };
+    } else {
+      // Default content for other courses
+      return {
+        'sections': [
+          {
+            'title': 'Section 1 - Introduction',
+            'duration': '30 mins',
+            'lessons': [
+              {
+                'number': '01',
+                'title': 'Course Overview',
+                'duration': '10 mins',
+                'description': 'Get an overview of what you will learn in this course and the skills you will develop.',
+              },
+              {
+                'number': '02',
+                'title': 'Setting Up Environment',
+                'duration': '10 mins',
+                'description': 'Prepare your development environment with all necessary tools and software.',
+              },
+              {
+                'number': '03',
+                'title': 'Basic Concepts',
+                'duration': '10 mins',
+                'description': 'Learn the fundamental concepts and principles that form the foundation of this course.',
+              },
+            ],
+          },
+          {
+            'title': 'Section 2 - Core Topics',
+            'duration': '2 hrs 15 mins',
+            'lessons': [
+              {
+                'number': '04',
+                'title': 'Advanced Techniques',
+                'duration': '35 mins',
+                'description': 'Dive deeper into advanced techniques and methodologies relevant to the course topic.',
+              },
+              {
+                'number': '05',
+                'title': 'Practical Applications',
+                'duration': '40 mins',
+                'description': 'Apply what you\'ve learned to real-world scenarios and practical projects.',
+              },
+              {
+                'number': '06',
+                'title': 'Best Practices',
+                'duration': '30 mins',
+                'description': 'Learn industry best practices and professional standards for the subject matter.',
+              },
+              {
+                'number': '07',
+                'title': 'Project Development',
+                'duration': '30 mins',
+                'description': 'Work on a comprehensive project that incorporates all the skills learned in the course.',
+              },
+            ],
+          },
+        ],
+      };
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> lessons = [
-      {
-        'title': 'Why Using Figma',
-        'duration': '10 mins',
-        'isLocked': false,
-        'description': 'Learn the basics of Figma and why it\'s the best tool for UI/UX design. This lesson covers the fundamental concepts and benefits of using Figma for your design projects.',
-      },
-      {
-        'title': 'Set up Your Figma Account',
-        'duration': '5 mins',
-        'isLocked': false,
-        'description': 'Step-by-step guide to create and configure your Figma account. You\'ll learn how to set up your profile, preferences, and workspace settings.',
-      },
-      {
-        'title': 'Take a Look Figma Interface',
-        'duration': '15 mins',
-        'isLocked': false,
-        'description': 'Explore the Figma interface and learn about all the tools and panels. This comprehensive overview will help you navigate Figma efficiently.',
-      },
-      {
-        'title': 'Working with Frame & Layer',
-        'duration': '10 mins',
-        'isLocked': !isCompleted,
-        'description': 'Master the concepts of frames and layers in Figma. Learn how to organize your designs effectively using these essential features.',
-      },
-      {
-        'title': 'Working with Text & Grids',
-        'duration': '10 mins',
-        'isLocked': !isCompleted,
-        'description': 'Learn how to work with text styles and layout grids in Figma. This lesson covers typography best practices and grid systems.',
-      },
-      {
-        'title': 'Using Figma Plugins',
-        'duration': '15 mins',
-        'isLocked': !isCompleted,
-        'description': 'Discover powerful Figma plugins that can enhance your workflow. Learn how to install, configure, and use plugins effectively.',
-      },
-    ];
+    final courseContent = _getCourseContent(title);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -401,46 +676,54 @@ class CourseDetailPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Lessons List - Tanpa Tab Bar
+          // Lessons List dengan Multiple Sections
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // Section Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Section 1 - Introduction',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
+                // Build sections dynamically based on course content
+                ...courseContent['sections'].map<Widget>((section) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Section Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            section['title'],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            section['duration'],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFFE53E3E),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      '15 mins',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: const Color(0xFFE53E3E),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                // Lessons
-                ...lessons.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final lesson = entry.value;
-                  return _buildLessonItem(
-                    context: context,
-                    number: '0${index + 1}',
-                    title: lesson['title'] as String,
-                    duration: lesson['duration'] as String,
-                    description: lesson['description'] as String,
-                    isLocked: lesson['isLocked'] as bool,
+                      // Section Lessons
+                      ...section['lessons'].map<Widget>((lesson) {
+                        return _buildLessonItem(
+                          context: context,
+                          number: lesson['number'],
+                          title: lesson['title'],
+                          duration: lesson['duration'],
+                          description: lesson['description'],
+                          isLocked: !isCompleted && int.parse(lesson['number']) > 3,
+                        );
+                      }).toList(),
+
+                      const SizedBox(height: 24),
+                    ],
                   );
                 }).toList(),
               ],

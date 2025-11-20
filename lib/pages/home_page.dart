@@ -1,7 +1,127 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'notification_page.dart';
 import 'most_popular_courses_page.dart';
 import 'search_page.dart';
+import 'course_detail_page.dart';
+
+// SLIDE CAROUSEL WIDGET
+class SlideCarousel extends StatefulWidget {
+  final List<Map<String, dynamic>> banners;
+  final double height;
+  final Duration autoScrollDuration;
+
+  const SlideCarousel({
+    Key? key,
+    required this.banners,
+    this.height = 180,
+    this.autoScrollDuration = const Duration(seconds: 2),
+  }) : super(key: key);
+
+  @override
+  State<SlideCarousel> createState() => _SlideCarouselState();
+}
+
+class _SlideCarouselState extends State<SlideCarousel> {
+  late PageController _pageController;
+  int _currentPage = 0;
+  late Timer _bannerTimer;
+  int _infiniteIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(
+      initialPage: widget.banners.length * 100,
+    );
+    _currentPage = widget.banners.length * 100;
+    _infiniteIndex = widget.banners.length * 100 % widget.banners.length;
+    _startBannerTimer();
+  }
+
+  void _startBannerTimer() {
+    _bannerTimer = Timer.periodic(widget.autoScrollDuration, (timer) {
+      if (_pageController.hasClients) {
+        _currentPage++;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _bannerTimer.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: widget.height,
+          child: PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _infiniteIndex = index % widget.banners.length;
+              });
+            },
+            itemBuilder: (context, index) {
+              final banner = widget.banners[index % widget.banners.length];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.blue[400]!,
+                      Colors.blue[600]!,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    banner['title'] ?? 'Banner ${(index % widget.banners.length) + 1}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Indicator Dots
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            widget.banners.length,
+            (index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: _infiniteIndex == index ? 24 : 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: _infiniteIndex == index ? const Color(0xFFE53E3E) : Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,6 +135,13 @@ class _HomePageState extends State<HomePage> {
 
   final List<String> categories = ['All', '3D Design', 'Business', 'Programming'];
 
+  // Data untuk banners
+  final List<Map<String, dynamic>> banners = [
+    {'title': 'Learn New Skills', 'subtitle': 'Start your journey today'},
+    {'title': 'Exclusive Offers', 'subtitle': 'Limited time promotion'},
+    {'title': 'Expert Mentors', 'subtitle': 'Learn from the best'},
+  ];
+
   // Data untuk mentors dengan gambar
   final List<Map<String, String>> mentors = [
     {'name': 'Joanna', 'image': 'assets/images/mentor1.png'},
@@ -22,6 +149,20 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Michella', 'image': 'assets/images/mentor3.png'},
     {'name': 'Wade', 'image': 'assets/images/mentor4.png'},
     {'name': 'Andrew', 'image': 'assets/images/mentor5.png'},
+  ];
+
+  // Data untuk semua mentors
+  final List<Map<String, String>> allMentors = [
+    {'name': 'Jacob Kulikowski', 'position': 'Marketing Analyst', 'image': 'assets/images/mentor1.png'},
+    {'name': 'Claire Ordonez', 'position': 'VP of Sales', 'image': 'assets/images/mentor2.png'},
+    {'name': 'Priscilla Ehrman', 'position': 'UX Designer', 'image': 'assets/images/mentor3.png'},
+    {'name': 'Wade Chenail', 'position': 'Manager, Solution Engineering', 'image': 'assets/images/mentor4.png'},
+    {'name': 'Kathryn Pera', 'position': 'Product Manager', 'image': 'assets/images/mentor5.png'},
+    {'name': 'Francene Vandyne', 'position': 'EVP and GM, Sales Cloud', 'image': 'assets/images/mentor1.png'},
+    {'name': 'Benny Spanbauer', 'position': 'Senior Product Manager', 'image': 'assets/images/mentor2.png'},
+    {'name': 'Jamel Eusebio', 'position': 'Product Designer', 'image': 'assets/images/mentor3.png'},
+    {'name': 'Cyndy Lillibridge', 'position': 'VP of Marketing', 'image': 'assets/images/mentor4.png'},
+    {'name': 'Titus Kitamura', 'position': '', 'image': 'assets/images/mentor5.png'},
   ];
 
   // Data untuk courses dengan gambar
@@ -68,166 +209,173 @@ class _HomePageState extends State<HomePage> {
     String category,
     {bool showBookmark = false}
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CourseDetailPage(),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Course Image
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[200],
+                      child: Icon(
+                        Icons.image,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
-              ),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Icon(
-                      Icons.image,
-                      size: 40,
-                      color: Colors.grey[400],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          // Course Details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Category Badge
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFEE2E2),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: const Color(0xFFE53E3E),
-                            width: 1,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEE2E2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: const Color(0xFFE53E3E),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _getCategoryIcon(category),
+                                size: 12,
+                                color: const Color(0xFFE53E3E),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                category,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFE53E3E),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _getCategoryIcon(category),
-                              size: 12,
-                              color: const Color(0xFFE53E3E),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              category,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFE53E3E),
-                              ),
-                            ),
-                          ],
+                        const Spacer(),
+                        Icon(
+                          showBookmark ? Icons.bookmark : Icons.bookmark_border,
+                          size: 20,
+                          color: const Color(0xFFE53E3E),
                         ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        showBookmark ? Icons.bookmark : Icons.bookmark_border,
-                        size: 20,
-                        color: const Color(0xFFE53E3E),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        price,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE53E3E),
-                        ),
+                    const SizedBox(height: 8),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      if (oldPrice.isNotEmpty) ...[
-                        const SizedBox(width: 8),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
                         Text(
-                          oldPrice,
+                          price,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFE53E3E),
+                          ),
+                        ),
+                        if (oldPrice.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            oldPrice,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          size: 14,
+                          color: Colors.amber,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          rating,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '| $students',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[500],
-                            decoration: TextDecoration.lineThrough,
+                            fontSize: 11,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        size: 14,
-                        color: Colors.amber,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        rating,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '| $students',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -245,6 +393,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  List<Map<String, String>> _getFilteredCourses() {
+    if (selectedCategory == 'All') {
+      return courses;
+    }
+    return courses.where((course) => course['category'] == selectedCategory).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,12 +407,11 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // HEADER SECTION - STATIS (TIDAK IKUT SCROLL)
+            // HEADER SECTION
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
                 children: [
-                  // Profile Image
                   Container(
                     width: 50,
                     height: 50,
@@ -332,7 +486,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            
+
             // SCROLLABLE CONTENT
             Expanded(
               child: SingleChildScrollView(
@@ -341,7 +495,7 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Search Bar - NAVIGASI KE SEARCH PAGE
+                      // Search Bar
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -397,123 +551,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      
-                      // Today's Special Card
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.red[400]!,
-                              Colors.red[600]!,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              right: -20,
-                              top: -20,
-                              child: Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white.withOpacity(0.1),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 40,
-                              top: 60,
-                              child: Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white.withOpacity(0.1),
-                                ),
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Text(
-                                    '40% OFF',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Today\'s Special',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      '40%',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 56,
-                                        fontWeight: FontWeight.bold,
-                                        height: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Get a discount for every course order!\nOnly valid for today!',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    height: 1.4,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    5,
-                                    (index) => Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                                      width: index == 0 ? 24 : 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(
-                                          index == 0 ? 1.0 : 0.4,
-                                        ),
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+
+                      // SLIDE CAROUSEL - BARU
+                      SlideCarousel(
+                        banners: banners,
+                        height: 160,
+                        autoScrollDuration: const Duration(seconds: 3),
                       ),
                       const SizedBox(height: 24),
 
@@ -530,7 +573,14 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TopMentorsPage(mentors: allMentors),
+                                ),
+                              );
+                            },
                             child: const Text(
                               'See All',
                               style: TextStyle(
@@ -672,7 +722,7 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 16),
 
                       // Popular Courses List
-                      ...courses.map((course) {
+                      ..._getFilteredCourses().map((course) {
                         return Column(
                           children: [
                             _buildCourseCard(
@@ -693,6 +743,149 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// TOP MENTORS PAGE
+class TopMentorsPage extends StatelessWidget {
+  final List<Map<String, String>> mentors;
+
+  const TopMentorsPage({
+    super.key,
+    required this.mentors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          'Top Mentors',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: mentors.length,
+        itemBuilder: (context, index) {
+          return MentorCard(
+            name: mentors[index]['name']!,
+            position: mentors[index]['position']!,
+            image: mentors[index]['image']!,
+          );
+        },
+      ),
+    );
+  }
+}
+
+// MENTOR CARD WIDGET
+class MentorCard extends StatelessWidget {
+  final String name;
+  final String position;
+  final String image;
+
+  const MentorCard({
+    super.key,
+    required this.name,
+    required this.position,
+    required this.image,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey[300]!,
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.person,
+                      color: Colors.grey[500],
+                      size: 30,
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  if (position.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      position,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.chat_bubble_outline,
+                color: Colors.grey,
+              ),
+              onPressed: () {},
             ),
           ],
         ),

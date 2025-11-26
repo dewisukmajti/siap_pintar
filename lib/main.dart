@@ -12,6 +12,8 @@ import 'pages/forgot_pasword.dart'; // TAMBAHKAN IMPORT INI
 import 'pages/forgot_password_otp.dart'; // TAMBAHKAN IMPORT INI
 import 'pages/create_new_password.dart'; // TAMBAHKAN IMPORT INI
 import 'pages/success.dart'; // TAMBAHKAN IMPORT INI
+import 'pages/forget_password_email.dart'; // IMPORT BARU UNTUK FORGOT PASSWORD SCREEN
+import 'pages/transactions_page.dart'; // IMPORT TRANSACTIONS PAGE
 
 void main() {
   runApp(SiapPintarApp());
@@ -36,8 +38,9 @@ class SiapPintarApp extends StatelessWidget {
         '/home': (context) => const CustomBottomNavBar(),
         '/edit': (context) =>  EditProfileScreen(),
         '/notification': (context) => const NotificationPage(),
-        // TAMBAHKAN ROUTES FORGOT PASSWORD DI SINI
+        // ROUTES FORGOT PASSWORD
         '/forgot-password': (context) => const ForgotPasswordPage(),
+        '/forgot-password-email': (context) => const ForgotPasswordScreen(), // ROUTES BARU
         '/forgot-password-otp': (context) => ForgotPasswordOtpPage(method: '', contact: ''),
         '/create-new-password': (context) => const CreateNewPasswordPage(),
         '/password-success': (context) => const PasswordResetSuccessPage(),
@@ -61,7 +64,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     const HomePage(), 
     const MyCoursePage(),
     const InboxPage(),
-    const TranscriptPage(),
+    const TransactionsPage(),
     const ProfilePages(
       username: "Andrew Ainsley", 
       email: "andrew@example.com",
@@ -109,28 +112,23 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           elevation: 0,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
+              icon: Icon(Icons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.play_circle_outline),
-              activeIcon: Icon(Icons.play_circle),
+              icon: Icon(Icons.list),
               label: 'My Course',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline),
-              activeIcon: Icon(Icons.chat_bubble),
+              icon: Icon(Icons.mail),
               label: 'Inbox',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.description_outlined),
-              activeIcon: Icon(Icons.description),
-              label: 'Transcript',
+              icon: Icon(Icons.shopping_cart),
+              label: 'Transacti...',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
+              icon: Icon(Icons.person),
               label: 'Profile',
             ),
           ],
@@ -157,7 +155,7 @@ class MyCoursePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.play_circle, size: 80, color: Color(0xFFE53E3E)),
+            Icon(Icons.list, size: 80, color: Color(0xFFE53E3E)),
             SizedBox(height: 16),
             Text(
               'My Course Page',
@@ -187,40 +185,10 @@ class InboxPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble, size: 80, color: Color(0xFFE53E3E)),
+            Icon(Icons.mail, size: 80, color: Color(0xFFE53E3E)),
             SizedBox(height: 16),
             Text(
               'Inbox Page',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class TranscriptPage extends StatelessWidget {
-  const TranscriptPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Transcript'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.description, size: 80, color: Color(0xFFE53E3E)),
-            SizedBox(height: 16),
-            Text(
-              'Transcript Page',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],

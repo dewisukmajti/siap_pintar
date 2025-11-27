@@ -165,8 +165,8 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Titus Kitamura', 'position': '', 'image': 'assets/images/mentor5.png'},
   ];
 
-  // Data untuk courses dengan gambar
-  final List<Map<String, String>> courses = [
+  // Data untuk courses dengan gambar - TAMBAHKAN DATA LENGKAP UNTUK COURSE DETAIL
+  final List<Map<String, dynamic>> courses = [
     {
       'title': '3D Design Illustration',
       'price': '\$48',
@@ -175,7 +175,12 @@ class _HomePageState extends State<HomePage> {
       'students': '8.9K students',
       'image': 'assets/images/course1.png',
       'category': '3D Design',
-      'bookmark': 'false',
+      'bookmark': false,
+      'description': 'Learn the fundamentals of 3D design and illustration. Create stunning 3D artwork with professional techniques and tools used by industry professionals.',
+      'instructor': 'Sarah Johnson',
+      'duration': '6 hours',
+      'lessons': '24 lessons',
+      'level': 'Beginner',
     },
     {
       'title': 'Digital Entrepreneur...',
@@ -185,7 +190,12 @@ class _HomePageState extends State<HomePage> {
       'students': '4.182 students',
       'image': 'assets/images/course2.png',
       'category': 'Business',
-      'bookmark': 'true',
+      'bookmark': true,
+      'description': 'Learn how to start and grow a successful digital business from scratch. This course covers everything from idea validation to scaling your business.',
+      'instructor': 'John Smith',
+      'duration': '10 hours',
+      'lessons': '35 lessons',
+      'level': 'All Levels',
     },
     {
       'title': 'Learn UX User Persona',
@@ -195,18 +205,17 @@ class _HomePageState extends State<HomePage> {
       'students': '1.798 students',
       'image': 'assets/images/course3.png',
       'category': 'UI/UX Design',
-      'bookmark': 'false',
+      'bookmark': false,
+      'description': 'Create effective user personas for better UX design and product development. Learn research methods and persona creation techniques.',
+      'instructor': 'David Lee',
+      'duration': '5 hours',
+      'lessons': '20 lessons',
+      'level': 'Beginner',
     },
   ];
 
   Widget _buildCourseCard(
-    String title,
-    String price,
-    String oldPrice,
-    String rating,
-    String students,
-    String imagePath,
-    String category,
+    Map<String, dynamic> course,
     {bool showBookmark = false}
   ) {
     return GestureDetector(
@@ -214,7 +223,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CourseDetailPage(),
+            builder: (context) => CourseDetailPage(course: course),
           ),
         );
       },
@@ -247,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                   bottomLeft: Radius.circular(16),
                 ),
                 child: Image.asset(
-                  imagePath,
+                  course['image'],
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -284,13 +293,13 @@ class _HomePageState extends State<HomePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                _getCategoryIcon(category),
+                                _getCategoryIcon(course['category']),
                                 size: 12,
                                 color: const Color(0xFFE53E3E),
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                category,
+                                course['category'],
                                 style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
@@ -302,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const Spacer(),
                         Icon(
-                          showBookmark ? Icons.bookmark : Icons.bookmark_border,
+                          course['bookmark'] ? Icons.bookmark : Icons.bookmark_border,
                           size: 20,
                           color: const Color(0xFFE53E3E),
                         ),
@@ -310,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      title,
+                      course['title'],
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -323,17 +332,17 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       children: [
                         Text(
-                          price,
+                          course['price'],
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFFE53E3E),
                           ),
                         ),
-                        if (oldPrice.isNotEmpty) ...[
+                        if (course['oldPrice'].isNotEmpty) ...[
                           const SizedBox(width: 8),
                           Text(
-                            oldPrice,
+                            course['oldPrice'],
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[500],
@@ -353,7 +362,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          rating,
+                          course['rating'],
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -362,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '| $students',
+                          '| ${course['students']}',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey[600],
@@ -393,7 +402,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  List<Map<String, String>> _getFilteredCourses() {
+  List<Map<String, dynamic>> _getFilteredCourses() {
     if (selectedCategory == 'All') {
       return courses;
     }
@@ -721,19 +730,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Popular Courses List
-                      ..._getFilteredCourses().map((course) {
+                      // Popular Courses List - HANYA TAMPILKAN 3 COURSE PERTAMA
+                      ..._getFilteredCourses().take(3).map((course) {
                         return Column(
                           children: [
                             _buildCourseCard(
-                              course['title']!,
-                              course['price']!,
-                              course['oldPrice']!,
-                              course['rating']!,
-                              course['students']!,
-                              course['image']!,
-                              course['category']!,
-                              showBookmark: course['bookmark'] == 'true',
+                              course,
+                              showBookmark: course['bookmark'],
                             ),
                             const SizedBox(height: 16),
                           ],

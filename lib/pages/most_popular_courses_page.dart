@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'course_detail_page.dart'; // Import CourseDetailPage
 
 class MostPopularCoursesPage extends StatefulWidget {
   const MostPopularCoursesPage({Key? key}) : super(key: key);
@@ -22,6 +23,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course1.png',
       'category': '3D Design',
       'bookmark': false,
+      'description': 'Learn the fundamentals of 3D design and illustration. Create stunning 3D artwork with professional techniques.',
+      'instructor': 'Sarah Johnson',
+      'duration': '6 hours',
+      'lessons': '24 lessons',
+      'level': 'Beginner',
     },
     {
       'title': '3D Blender and UI/UX',
@@ -32,6 +38,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_blender.png',
       'category': '3D Design',
       'bookmark': false,
+      'description': 'Master Blender for 3D modeling and combine it with UI/UX design principles.',
+      'instructor': 'Mike Chen',
+      'duration': '8 hours',
+      'lessons': '30 lessons',
+      'level': 'Intermediate',
     },
     {
       'title': '3D Icons Set Blender',
@@ -42,6 +53,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_icons.png',
       'category': '3D Design',
       'bookmark': false,
+      'description': 'Create beautiful 3D icon sets using Blender. Perfect for app and web design.',
+      'instructor': 'Emma Davis',
+      'duration': '4 hours',
+      'lessons': '18 lessons',
+      'level': 'Beginner',
     },
     {
       'title': 'Digital Entrepreneur...',
@@ -52,6 +68,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course2.png',
       'category': 'Business',
       'bookmark': true,
+      'description': 'Learn how to start and grow a successful digital business from scratch.',
+      'instructor': 'John Smith',
+      'duration': '10 hours',
+      'lessons': '35 lessons',
+      'level': 'All Levels',
     },
     {
       'title': 'Digital Marketing: Fa...',
@@ -62,6 +83,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_marketing.png',
       'category': 'Business',
       'bookmark': false,
+      'description': 'Complete guide to digital marketing strategies for business growth.',
+      'instructor': 'Lisa Wang',
+      'duration': '12 hours',
+      'lessons': '42 lessons',
+      'level': 'Intermediate',
     },
     {
       'title': 'Entrepreneurship for...',
@@ -72,6 +98,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_entrepreneur.png',
       'category': 'Business',
       'bookmark': false,
+      'description': 'Essential entrepreneurship skills for starting your own business venture.',
+      'instructor': 'Robert Brown',
+      'duration': '7 hours',
+      'lessons': '28 lessons',
+      'level': 'Beginner',
     },
     {
       'title': 'CRM Management for D...',
@@ -82,6 +113,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_crm.png',
       'category': 'Business',
       'bookmark': false,
+      'description': 'Master Customer Relationship Management tools and strategies.',
+      'instructor': 'Maria Garcia',
+      'duration': '9 hours',
+      'lessons': '32 lessons',
+      'level': 'Advanced',
     },
     {
       'title': 'Learn UX User Persona',
@@ -92,6 +128,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course3.png',
       'category': 'Programming',
       'bookmark': false,
+      'description': 'Create effective user personas for better UX design and product development.',
+      'instructor': 'David Lee',
+      'duration': '5 hours',
+      'lessons': '20 lessons',
+      'level': 'Beginner',
     },
     {
       'title': 'Flutter Mobile Apps',
@@ -102,6 +143,11 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       'image': 'assets/images/course_flutter.png',
       'category': 'Programming',
       'bookmark': false,
+      'description': 'Build beautiful cross-platform mobile applications with Flutter.',
+      'instructor': 'Alex Taylor',
+      'duration': '15 hours',
+      'lessons': '50 lessons',
+      'level': 'Intermediate',
     },
   ];
 
@@ -110,6 +156,16 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
       return allCourses;
     }
     return allCourses.where((course) => course['category'] == selectedCategory).toList();
+  }
+
+  // Function untuk navigasi ke CourseDetailPage
+  void _navigateToCourseDetail(Map<String, dynamic> course) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CourseDetailPage(course: course),
+      ),
+    );
   }
 
   @override
@@ -237,7 +293,10 @@ class _MostPopularCoursesPageState extends State<MostPopularCoursesPage> {
                   itemCount: filteredCourses.length,
                   itemBuilder: (context, index) {
                     final course = filteredCourses[index];
-                    return _buildCourseCard(course);
+                    return GestureDetector(
+                      onTap: () => _navigateToCourseDetail(course),
+                      child: _buildCourseCard(course),
+                    );
                   },
                 );
               },
